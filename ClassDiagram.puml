@@ -1,0 +1,54 @@
+@startuml
+
+' Indicate that MainApp uses Main.fxml, which in turn uses MainController
+MainApp .down.> Main.fxml : loads >
+Main.fxml .right.> MainController : specifies >
+
+' Define MainApp class.
+class MainApp {
+    +void start(Stage primaryStage)
+    +void main(String[] args)
+}
+
+MainApp ..|> Application : extends
+
+' Define MainController class.
+class MainController {
+    -VBox imageInfoBox
+    -ImageView imageView
+    -ComboBox<String> formatComboBox
+    -Button downloadButton
+    -BufferedImage currentImage
+    -File currentImageFile
+    -ImageProcessing imageProcessor
+
+    +void initialize()
+    +void handleUpload()
+    +void handleDownload()
+    +void displayImageProperties()
+}
+
+' Define ImageManager class.
+class ImageManager {
+    +BufferedImage loadImage(String path)
+    +void saveImage(BufferedImage image, String format, String path)
+    +BufferedImage createThumbnail(BufferedImage original, int thumbnailWidth, int thumbnailHeight)
+    +Metadata readMetadata(File imageFile)
+}
+
+' Define ImageProcessing interface
+interface ImageProcessing {
+    +BufferedImage loadImage(String path)
+    +void saveImage(BufferedImage image, String format, String path)
+    +BufferedImage createThumbnail(BufferedImage original, int thumbnailWidth, int thumbnailHeight)
+    +Metadata readMetadata(File imageFile)
+}
+
+' relationships
+MainApp ..|> Application : extends
+MainController -down-> ImageProcessing : uses
+ImageManager ..|> ImageProcessing : implements
+
+MainController -right-> "{field} imageView" : displays >
+
+@enduml
